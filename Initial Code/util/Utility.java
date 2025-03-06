@@ -1,3 +1,4 @@
+package util;
 public class Utility {
 
 	/**
@@ -29,5 +30,26 @@ public class Utility {
 	public static boolean isSquare(int num) {
 		int x = (int) Math.sqrt(num);
 		return x*x == num;
+	}
+	public static boolean isSquare(double num) {
+		int x = (int) Math.sqrt(num);
+		return x*x == num;
+	}
+
+	public static boolean isFibonacci(double num) {
+		return isSquare(5*num*num + 4) || isSquare(5*num*num - 4);
+	}
+	public static int whichPositionOfFibonacci(double num) {
+		if(isFibonacci(num)) {
+			int x = (int) Math.sqrt(5*num*num + 4);
+			if(x*x == 5*num*num + 4) {
+				return x;
+			}
+			x = (int) Math.sqrt(5*num*num - 4);
+			if(x*x == 5*num*num - 4) {
+				return x;
+			}
+		}
+		return -1;
 	}
 }

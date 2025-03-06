@@ -1,10 +1,11 @@
+import util.Utility;
 public class DeathEater extends Monster implements Combatable {
 	public DeathEater(Complex mana) {
-		
+		super(mana);
 	}
 
 	@Override
 	public double getCombatScore() {
-		return 1.0;
+		return Math.sqrt(getMana().getRe() * getMana().getRe() + getMana().getIm() * getMana().getIm());
 	}
 }
