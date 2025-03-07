@@ -1,4 +1,5 @@
-import util.Utility;
+import static util.Utility.isFibonacci;
+import static util.Utility.whichPositionOfFibonacci;
 
 public class Paladin extends Knight {
 	public Paladin(int baseHp, int wp) {
