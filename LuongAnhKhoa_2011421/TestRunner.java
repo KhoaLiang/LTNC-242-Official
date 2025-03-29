@@ -18,7 +18,7 @@ public class TestRunner {
 
         for (int i = 0; i < testCases.size(); i++) {
             boolean testPassed = runTest(i + 1, testCases.get(i));
-            System.out.println(testPassed ? "✅ Test Case " + (i + 1) + " Passed!" : "❌ Test Case " + (i + 1) + " Failed!");
+            System.out.println(testPassed ? "GOOD Test Case " + (i + 1) + " Passed!" : "FAIL Test Case " + (i + 1) + " Failed!");
         }
     }
 
@@ -48,7 +48,7 @@ public class TestRunner {
             return validateTestResult(testCase.expectedPR, actualPR);
         } catch (Exception e) {
             System.setOut(originalOut);
-            System.out.println("❌ Test Case " + testNumber + " Failed due to Exception!");
+            System.out.println("FAIL Test Case " + testNumber + " Failed due to Exception!");
             e.printStackTrace();
             return false;
         }
@@ -65,8 +65,8 @@ public class TestRunner {
         if (actualPR != null && Math.abs(actualPR - expectedPR) < 1e-6) {
             return true;
         } else {
-            System.out.println("❌ Expected: pR = " + expectedPR);
-            System.out.println("❌ Actual: " + (actualPR != null ? "pR = " + actualPR : "No valid pR found"));
+            System.out.println("FAIL Expected: pR = " + expectedPR);
+            System.out.println("FAIL Actual: " + (actualPR != null ? "pR = " + actualPR : "No valid pR found"));
             return false;
         }
     }
