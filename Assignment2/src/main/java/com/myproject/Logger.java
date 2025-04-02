@@ -42,5 +42,13 @@ public class Logger {
     public static void logAlert(String stockCode, double price) {
         System.out.println("[ALERT] " + stockCode + " price changed significantly to $" + price);
     }
+    // Log alert when price changes significantly high threshold
+    public static void logAlertHigh(String stockCode, double price) {
+        System.out.println("[ALERT] " + stockCode + " price has risen significantly to $" + price);
+    }
+    // Log alert when price changes significantly low threshold
+    public static void logAlertLow(String stockCode, double price) {
+        System.out.println("[ALERT] " + stockCode + " price has dropped significantly to $" + price);
+    }
 }
 
