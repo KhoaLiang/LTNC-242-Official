@@ -14,7 +14,7 @@ public class StockRealtimePriceView implements StockViewer {
         double lastPrice = lastPrices.getOrDefault(stockCode, 0.0);
         lastPrices.put(stockCode, currentPrice);
         if (currentPrice != lastPrice) {
-            Logger.logRealtime(stockCode, lastPrice);
+            Logger.logRealtime(stockCode, currentPrice);
         }
     }
 }
