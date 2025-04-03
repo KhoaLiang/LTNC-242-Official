@@ -30,28 +30,58 @@ public class StockFeeder {
         stockList.add(stock);
     }
 
+    // public void registerViewer(String code, StockViewer stockViewer) {
+    //     // TODO: Implement registration logic, including checking stock existence
+    //     viewers.computeIfAbsent(code, k -> new ArrayList<>()).add(stockViewer);
+    // }    
+
+    // public void unregisterViewer(String code, StockViewer stockViewer) {
+    //     List<StockViewer> stockViewers = viewers.get(code);
+    //     if (stockViewers != null) {
+    //         if (stockViewers.remove(stockViewer)) {
+    //             // Successfully removed the viewer
+    //             if (stockViewers.isEmpty()) {
+    //                 // If no viewers remain for this stock, remove the entry from the map
+    //                 viewers.remove(code);
+    //             }
+    //         } else {
+    //             // Viewer was not registered for this stock
+    //             System.err.println("Error: Viewer not found for stock code: " + code);
+    //         }
+    //     } else {
+    //         // No viewers registered for this stock code
+    //         System.err.println("Error: No viewers registered for stock code: " + code);
+    //     }
+    // }
     public void registerViewer(String code, StockViewer stockViewer) {
-        // TODO: Implement registration logic, including checking stock existence
+        if (!isStockExists(code)) {
+            System.out.println("[WARNING] Error when registering with " + code);
+            return;
+        }
         viewers.computeIfAbsent(code, k -> new ArrayList<>()).add(stockViewer);
-    }    
+    }
 
     public void unregisterViewer(String code, StockViewer stockViewer) {
+        if (!isStockExists(code)) {
+            System.out.println("[WARNING] Error when unregistering with " + code);
+            return;
+        }
         List<StockViewer> stockViewers = viewers.get(code);
         if (stockViewers != null) {
             if (stockViewers.remove(stockViewer)) {
-                // Successfully removed the viewer
                 if (stockViewers.isEmpty()) {
-                    // If no viewers remain for this stock, remove the entry from the map
                     viewers.remove(code);
                 }
             } else {
-                // Viewer was not registered for this stock
                 System.err.println("Error: Viewer not found for stock code: " + code);
             }
         } else {
-            // No viewers registered for this stock code
             System.err.println("Error: No viewers registered for stock code: " + code);
         }
+    }
+
+    private boolean isStockExists(String code) {
+        return stockList.stream().anyMatch(stock -> stock.getCode().equals(code));
     }
 
     public void notify(StockPrice stockPrice) {

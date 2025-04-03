@@ -21,16 +21,16 @@ public class StockAlertView implements StockViewer {
         double currentPrice = stockPrice.getAvgPrice();
         double lastPrice = lastAlertedPrices.getOrDefault(stockCode, 0.0);
         lastAlertedPrices.put(stockCode, currentPrice);
-        if (currentPrice > alertThresholdHigh) {
-            alertAbove(stockCode, currentPrice);
-        } else if (currentPrice < alertThresholdLow) {
-            alertBelow(stockCode, currentPrice);
-        }
-        // if (currentPrice > alertThresholdHigh && (lastPrice <= alertThresholdHigh)) {
+        // if (currentPrice > alertThresholdHigh) {
         //     alertAbove(stockCode, currentPrice);
-        // } else if (currentPrice < alertThresholdLow && (lastPrice >= alertThresholdLow)) {
+        // } else if (currentPrice < alertThresholdLow) {
         //     alertBelow(stockCode, currentPrice);
         // }
+        if (currentPrice > alertThresholdHigh && (lastPrice <= alertThresholdHigh)) {
+            alertAbove(stockCode, currentPrice);
+        } else if (currentPrice < alertThresholdLow && (lastPrice >= alertThresholdLow)) {
+            alertBelow(stockCode, currentPrice);
+        }
     }
 
     private void alertAbove(String stockCode, double price) {
