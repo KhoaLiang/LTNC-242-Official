@@ -36,9 +36,7 @@ This will generate a `.jar` file in `target/`.
 To start real-time stock monitoring:
 
 ```sh
-mvn exec:java -Dexec.mainClass=com.myproject.Main
-# ???? is the below the correct?
-mvn exec:java -Dexec.mainClass="com.myproject.Main"
+mvn exec:java "-Dexec.mainClass=com.myproject.Main"
 ```
 
 Maven automatically handles dependencies and execution.
