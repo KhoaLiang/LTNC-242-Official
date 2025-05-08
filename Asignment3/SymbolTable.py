@@ -102,7 +102,7 @@ def simulate(list_of_commands):
 
             level = find_level(stack, identifier_name)
             if level is None:
-                return stack, results + [f"Undeclared: {command}"]
+                return stack, [f"Undeclared: {command}"]  # Return immediately on error
 
             # Append the block level to results
             return stack, results + [str(len(stack) - level - 1)]

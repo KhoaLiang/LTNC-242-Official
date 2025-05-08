@@ -462,7 +462,7 @@ class TestSymbolTable(unittest.TestCase):
             "PRINT",
             "END",
         ]
-        expected = ["success", "success", "success", "success", "success", "z//1 y//0 x//0"]
+        expected = ["success", "success", "success", "success", "x//0 y//0 z//1"]
 
         self.assertTrue(TestUtils.check(input, expected, 138))
 
@@ -561,102 +561,77 @@ class TestSymbolTable(unittest.TestCase):
         expected = ["success", "success", "success", "success", "0"]
 
         self.assertTrue(TestUtils.check(input, expected, 144))
-
+    # TypeMismatch error for assign
     def test_45(self):
         input = [
             "INSERT x number",
-            "INSERT y string",
             "BEGIN",
-            "INSERT z number",
-            "BEGIN",
-            "INSERT w string",
-            "END",
-            "END",
-            "LOOKUP x",
-        ]
-        expected = ["success", "success", "success", "success", "success", "0"]
+            "ASSIGN x 'aa'"
+        ] 
+        expected = ["TypeMismatch: ASSIGN x 'aa'"]
 
         self.assertTrue(TestUtils.check(input, expected, 145))
-
     def test_46(self):
         input = [
-            "INSERT x number",
-            "INSERT y string",
-            "BEGIN",
-            "INSERT z number",
-            "BEGIN",
-            "INSERT w string",
-            "END",
-            "END",
-            "LOOKUP z",
-        ]
-        expected = ["success", "success", "success", "success", "success", "Undeclared: LOOKUP z"]
+            "INSERT x string",
+            "ASSIGN x 5"
+        ] 
+        expected = ["TypeMismatch: ASSIGN x 5"]
 
         self.assertTrue(TestUtils.check(input, expected, 146))
-
     def test_47(self):
         input = [
             "INSERT x number",
             "INSERT y string",
             "BEGIN",
-            "INSERT z number",
-            "BEGIN",
-            "INSERT w string",
+            "INSERT x number",
+            "INSERT t number",
+            "INSERT w number",
             "END",
-            "END",
-            "LOOKUP w",
         ]
-        expected = ["success", "success", "success", "success", "success", "Undeclared: LOOKUP w"]
-
+        expected = ["success", "success", "success", "success", "success"]
         self.assertTrue(TestUtils.check(input, expected, 147))
-
     def test_48(self):
         input = [
             "INSERT x number",
             "INSERT y string",
             "BEGIN",
-            "INSERT z number",
-            "BEGIN",
-            "INSERT w string",
+            "INSERT x number",
+            "INSERT t number",
+            "INSERT w number",
             "END",
-            "END",
-            "LOOKUP y",
+            "INSERT w number",
         ]
-        expected = ["success", "success", "success", "success", "success", "0"]
-
+        expected = ["success", "success", "success", "success", "success", "success"]
         self.assertTrue(TestUtils.check(input, expected, 148))
-
     def test_49(self):
         input = [
             "INSERT x number",
             "INSERT y string",
             "BEGIN",
-            "INSERT z number",
-            "BEGIN",
-            "INSERT w string",
+            "INSERT x number",
+            "INSERT t number",
+            "INSERT w number",
             "END",
-            "END",
-            "LOOKUP x",
+            "INSERT x number",
         ]
-        expected = ["success", "success", "success", "success", "success", "0"]
-
+        expected = ["Redeclared: INSERT x number"]
         self.assertTrue(TestUtils.check(input, expected, 149))
-
     def test_50(self):
         input = [
             "INSERT x number",
             "INSERT y string",
             "BEGIN",
-            "INSERT z number",
-            "BEGIN",
-            "INSERT w string",
+            "INSERT x number",
+            "INSERT t number",
+            "INSERT w number",
+            "INSERT w number",
             "END",
-            "END",
-            "LOOKUP z",
         ]
-        expected = ["success", "success", "success", "success", "success", "Undeclared: LOOKUP z"]
-
+        expected = ["Redeclared: INSERT w number"]
         self.assertTrue(TestUtils.check(input, expected, 150))
+
+
 
 
 

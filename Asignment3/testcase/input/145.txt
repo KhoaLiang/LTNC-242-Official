@@ -1,9 +1,3 @@
 INSERT x number
-INSERT y string
 BEGIN
-INSERT z number
-BEGIN
-INSERT w string
-END
-END
-LOOKUP x
+ASSIGN x 'aa'

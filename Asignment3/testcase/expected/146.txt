@@ -1,6 +1,1 @@
-success
-success
-success
-success
-success
-Undeclared: LOOKUP z
+TypeMismatch: ASSIGN x 5

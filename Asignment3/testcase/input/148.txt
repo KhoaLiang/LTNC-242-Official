@@ -1,9 +1,8 @@
 INSERT x number
 INSERT y string
 BEGIN
-INSERT z number
-BEGIN
-INSERT w string
+INSERT x number
+INSERT t number
+INSERT w number
 END
-END
-LOOKUP y
+INSERT w number
