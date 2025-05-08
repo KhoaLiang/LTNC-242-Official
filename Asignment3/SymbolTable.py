@@ -15,7 +15,7 @@ def simulate(list_of_commands):
     def process_command(state, command):
         stack, results = state
 
-        # Check for leading/trailing spaces or multiple spaces
+        # Check leading/trailing spaces or multiple spaces
         if command.strip() != command or "  " in command:
             return stack, [f"InvalidInstruction: {command}"]
 
@@ -38,7 +38,7 @@ def simulate(list_of_commands):
             if typ not in ["number", "string"]:
                 return stack, [f"InvalidInstruction: {command}"]
 
-            # Check for Redeclared error in the current block
+            # Check Redeclared error in the current block
             current_block = stack[0]
             if identifier_name in current_block:
                 return stack, [f"Redeclared: {command}"]
@@ -59,7 +59,7 @@ def simulate(list_of_commands):
             #         if name in block:
             #             return block[name]
             #     return None
-            find_identifier = lambda stack, name: next((block[name] for block in stack if name in block), None)
+            find_identifier = lambda stack, name: next(filter(lambda block: name in block, stack), {}).get(name, None)
 
             identifier_type = find_identifier(stack, identifier_name)
             if identifier_type is None:
@@ -77,7 +77,7 @@ def simulate(list_of_commands):
             else:
                 return stack, [f"InvalidInstruction: {command}"]
 
-            # Check for TypeMismatch error
+            # Check TypeMismatch error
             if identifier_type != value_type:
                 return stack, [f"TypeMismatch: {command}"]
 
@@ -85,13 +85,13 @@ def simulate(list_of_commands):
 
         elif cmd_type == "BEGIN":
             # Push a new block onto the stack
-            return [{}] + stack, results  # No "success" for BEGIN
+            return [{}] + stack, results  # No "success" BEGIN
 
         elif cmd_type == "END":
             # Pop the top block from the stack
             if len(stack) == 1:
                 return stack, ["UnknownBlock"]  # Return only "UnknownBlock" and stop further processing
-            return stack[1:], results  # No "success" for END
+            return stack[1:], results  # No "success" END
 
         elif cmd_type == "LOOKUP":
             if len(parts) != 2:
@@ -103,12 +103,7 @@ def simulate(list_of_commands):
                 return stack, [f"InvalidInstruction: {command}"]
 
             # Find the identifier in the stack
-            # def find_level(stack, name):
-            #     for i, block in enumerate(stack):
-            #         if name in block:
-            #             return i
-            #     return None
-            find_level = lambda stack, name: next((i for i, block in enumerate(stack) if name in block), None)
+            find_level = lambda stack, name: next(map(lambda x: x[0], filter(lambda x: name in x[1], enumerate(stack))), None)
 
             level = find_level(stack, identifier_name)
             if level is None:
@@ -121,23 +116,19 @@ def simulate(list_of_commands):
         elif cmd_type == "PRINT":
             # Collect all symbols in the stack in declaration order, considering redeclarations
             declared_order = []
-            for block in reversed(stack):  # Iterate from the bottom-most block to the top-most block
-                for name in block:
-                    declared_order.append(name)  # Always add the name to preserve redeclaration order
+            declared_order = reduce(lambda acc, block: acc + list(block.keys()), reversed(stack), [])
 
             # Generate the symbols with their levels
-            symbols = [
-                f"{name}//{len(stack) - i - 1}"
-                for i, block in enumerate(stack)
-                for name in block
-            ]
+            symbols = list(map(
+                lambda x: f"{x[1]}//{len(stack) - x[0] - 1}",
+                [(i, name) for i, block in enumerate(stack) for name in block]
+            ))
 
             # Arrange symbols in the declared order
-            symbols_to_print = [
-                symbol for name in declared_order
-                for symbol in symbols
-                if symbol.startswith(f"{name}//")
-            ]
+            symbols_to_print = list(filter(
+                lambda symbol: any(symbol.startswith(f"{name}//") for name in declared_order),
+                symbols
+            ))
 
             # Determine the current level of the PRINT command
             current_level = len(stack) - 1
@@ -145,33 +136,37 @@ def simulate(list_of_commands):
             # Identify redeclared identifiers
             ReDeclared = []
             seen = set()
-            for name in declared_order:
-                if name in seen:
-                    ReDeclared.append(name)
-                else:
-                    seen.add(name)
+            ReDeclared = list(filter(lambda name: declared_order.count(name) > 1, declared_order))
 
             # Construct the expected result
-            expected_result = []
-            for name in declared_order:
-                if name in ReDeclared:
-                    # Use the current level for redeclared identifiers
-                    expected_result.append(f"{name}//{current_level}")
-                else:
-                    # Use the original level from symbols_to_print
-                    for symbol in symbols_to_print:
-                        if symbol.startswith(f"{name}//"):
-                            expected_result.append(symbol)
-                            break
-            debut_result = []
+            expected_result = [
+                f"{name}//{current_level}" if name in ReDeclared else next(
+                    symbol for symbol in symbols_to_print if symbol.startswith(f"{name}//")
+                )
+                for name in declared_order
+            ]
+            # debut_result = []
+            # seen_redeclared = set()
+            # for symbol in expected_result:
+            #     name = symbol.split("//")[0]
+            #     if name in ReDeclared:
+            #         if name not in seen_redeclared:
+            #             seen_redeclared.add(name)
+            #             continue  # Skip the first occurrence
+            #     debut_result.append(symbol)
             seen_redeclared = set()
-            for symbol in expected_result:
+
+            def include_symbol(symbol):
                 name = symbol.split("//")[0]
                 if name in ReDeclared:
+                    # If it's the first encountered instance, add to the set and exclude the symbol.
                     if name not in seen_redeclared:
                         seen_redeclared.add(name)
-                        continue  # Skip the first occurrence
-                debut_result.append(symbol)
+                        return False
+                return True
+
+            debut_result = list(filter(include_symbol, expected_result))
+
 
             return stack, results + [
                 # " ".join(declared_order), 
