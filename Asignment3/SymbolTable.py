@@ -54,11 +54,6 @@ def simulate(list_of_commands):
             _, identifier_name, value = parts
 
             # Find the identifier in the stack
-            # def find_identifier(stack, name):
-            #     for block in stack:
-            #         if name in block:
-            #             return block[name]
-            #     return None
             find_identifier = lambda stack, name: next(filter(lambda block: name in block, stack), {}).get(name, None)
 
             identifier_type = find_identifier(stack, identifier_name)
@@ -145,15 +140,7 @@ def simulate(list_of_commands):
                 )
                 for name in declared_order
             ]
-            # debut_result = []
-            # seen_redeclared = set()
-            # for symbol in expected_result:
-            #     name = symbol.split("//")[0]
-            #     if name in ReDeclared:
-            #         if name not in seen_redeclared:
-            #             seen_redeclared.add(name)
-            #             continue  # Skip the first occurrence
-            #     debut_result.append(symbol)
+
             seen_redeclared = set()
 
             def include_symbol(symbol):
@@ -178,10 +165,9 @@ def simulate(list_of_commands):
 
         elif cmd_type == "RPRINT":
             # Collect all symbols in the stack in declaration order, considering redeclarations
-            declared_order = []
-            for block in reversed(stack):  # Iterate from the bottom-most block to the top-most block
-                for name in block:
-                    declared_order.append(name)  # Always add the name to preserve redeclaration order
+            declared_order = reduce(lambda acc, block: acc + list(block.keys()), reversed(stack), [])
+
+            # reverse the order of the declarasion
             rev_declared_order = list(reversed(declared_order))
             # Collect all symbols in the stack 
             symbols = [
@@ -199,30 +185,19 @@ def simulate(list_of_commands):
             current_level = len(stack) - 1
 
             # Identify redeclared identifiers
-            ReDeclared = []
             seen = set()
-            for name in rev_declared_order:
-                if name in seen:
-                    ReDeclared.append(name)
-                else:
-                    seen.add(name)
+            ReDeclared = [name for name in rev_declared_order if name in seen or seen.add(name)]
 
             # Construct the expected result
             expected_result = []
             seen_names = set()  # Track already added names
-            for name in rev_declared_order:
-                if name in seen_names:
-                    continue  # Skip if the name has already been added
-                seen_names.add(name)  # Mark the name as added
-                if name in ReDeclared:
-                    # Use the current level for redeclared identifiers
-                    expected_result.append(f"{name}//{current_level}")
-                else:
-                    # Use the original level from symbols_to_print
-                    for symbol in symbols_to_print:
-                        if symbol.startswith(f"{name}//"):
-                            expected_result.append(symbol)
-                            break
+            expected_result = [
+                f"{name}//{current_level}" if name in ReDeclared else next(
+                    symbol for symbol in symbols_to_print if symbol.startswith(f"{name}//")
+                )
+                for name in rev_declared_order
+                if name not in seen_names and not seen_names.add(name)
+            ]
             return stack, results + [
                                     # " ".join(declared_order), 
                                     # " ".join(rev_declared_order), 
@@ -245,7 +220,7 @@ def simulate(list_of_commands):
     final_stack, final_results = reduce(reducer, list_of_commands, initial_state)
 
     # Check for unclosed blocks only if no errors occurred
-    if len(final_stack) > 1 and all(r == "success" for r in final_results):
+    if len(final_stack) > 1 and all(map(lambda r: r == "success", final_results)):
         return [f"UnclosedBlock: {len(final_stack) - 1}"]
 
     return final_results

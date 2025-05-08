@@ -405,6 +405,259 @@ class TestSymbolTable(unittest.TestCase):
         ]
         expected = ["success", "success", "success", "success", "z//1 y//1 x//0"]
 
+        self.assertTrue(TestUtils.check(input, expected, 134))
+    def test_35(self):
+        input = [
+            "INSERT a number",
+            "INSERT b string",
+            "BEGIN",
+            "INSERT c number",
+            "INSERT d string",
+            "RPRINT",
+            "END",
+        ]
+        expected = ["success", "success", "success", "success", "d//1 c//1 b//0 a//0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 135))
+
+    def test_36(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT x number",
+            "INSERT y string",
+            "PRINT",
+            "END",
+        ]
+        expected = ["success", "success", "success", "success", "x//1 y//1"]
+
+        self.assertTrue(TestUtils.check(input, expected, 136))
+
+    def test_37(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "RPRINT",
+            "END",
+            "END",
+        ]
+        expected = ["success", "success", "success", "success", "w//2 z//1 y//0 x//0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 137))
+
+    def test_38(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "PRINT",
+            "END",
+        ]
+        expected = ["success", "success", "success", "success", "success", "z//1 y//0 x//0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 138))
+
+    def test_39(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "PRINT",
+        ]
+        expected = ["success", "success", "success", "success", "x//0 y//0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 139))
+
+    def test_40(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "RPRINT",
+        ]
+        expected = ["success", "success", "success", "success", "y//0 x//0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 140))
+
+    def test_41(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP x",
+        ]
+        expected = ["success", "success", "success", "success", "0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 141))
+
+    def test_42(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP z",
+        ]
+        expected = ["Undeclared: LOOKUP z"]
+
+        self.assertTrue(TestUtils.check(input, expected, 142))
+
+    def test_43(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP w",
+        ]
+        expected = ["Undeclared: LOOKUP w"]
+
+        self.assertTrue(TestUtils.check(input, expected, 143))
+
+    def test_44(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP y",
+        ]
+        expected = ["success", "success", "success", "success", "0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 144))
+
+    def test_45(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP x",
+        ]
+        expected = ["success", "success", "success", "success", "success", "0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 145))
+
+    def test_46(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP z",
+        ]
+        expected = ["success", "success", "success", "success", "success", "Undeclared: LOOKUP z"]
+
+        self.assertTrue(TestUtils.check(input, expected, 146))
+
+    def test_47(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP w",
+        ]
+        expected = ["success", "success", "success", "success", "success", "Undeclared: LOOKUP w"]
+
+        self.assertTrue(TestUtils.check(input, expected, 147))
+
+    def test_48(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP y",
+        ]
+        expected = ["success", "success", "success", "success", "success", "0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 148))
+
+    def test_49(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP x",
+        ]
+        expected = ["success", "success", "success", "success", "success", "0"]
+
+        self.assertTrue(TestUtils.check(input, expected, 149))
+
+    def test_50(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT w string",
+            "END",
+            "END",
+            "LOOKUP z",
+        ]
+        expected = ["success", "success", "success", "success", "success", "Undeclared: LOOKUP z"]
+
+        self.assertTrue(TestUtils.check(input, expected, 150))
+
 
 
     
