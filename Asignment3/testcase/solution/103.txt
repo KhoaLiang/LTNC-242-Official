@@ -1,1 +1,4 @@
-InvalidInstruction: BEGIN
+success
+success
+success
+success

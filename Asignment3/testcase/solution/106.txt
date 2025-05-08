@@ -1,1 +1,5 @@
-InvalidInstruction: BEGIN
+success
+success
+success
+success
+x//1 y//1 x//0 z//0

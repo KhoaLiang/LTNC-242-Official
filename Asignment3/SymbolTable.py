@@ -3,7 +3,6 @@ from Symbol import *
 from functools import *
 
 
-# check valid
 def simulate(list_of_commands):
     """
     Executes a list of commands and processes them sequentially.
@@ -15,78 +14,132 @@ def simulate(list_of_commands):
         list[str]: A list of return messages corresponding to each command.
     """
     def process_command(state, command):
-        symbol_table, results = state
+        stack, results = state
 
         # Check for leading/trailing spaces or multiple spaces
         if command.strip() != command or "  " in command:
-            return symbol_table, [f"InvalidInstruction: {command}"]
+            return stack, [f"InvalidInstruction: {command}"]
 
         parts = command.split()
 
         # Skip invalid commands with incorrect number of parts
-        if len(parts) < 2:
-            return symbol_table, [f"InvalidInstruction: {command}"]
+        if len(parts) < 1:
+            return stack, [f"InvalidInstruction: {command}"]
 
         cmd_type = parts[0]
 
         if cmd_type == "INSERT":
             if len(parts) != 3:
-                return symbol_table, [f"InvalidInstruction: {command}"]
+                return stack, [f"InvalidInstruction: {command}"]
             _, identifier_name, typ = parts
 
             # Validate identifier_name and type
             if not identifier_name[0].islower() or not identifier_name.replace("_", "").isalnum():
-                return symbol_table, [f"InvalidInstruction: {command}"]
+                return stack, [f"InvalidInstruction: {command}"]
             if typ not in ["number", "string"]:
-                return symbol_table, [f"InvalidInstruction: {command}"]
+                return stack, [f"InvalidInstruction: {command}"]
 
-            # Check for Redeclared error
-            if identifier_name in symbol_table:
-                return symbol_table, [f"Redeclared: {command}"]
+            # Check for Redeclared error in the current block
+            current_block = stack[0]
+            if identifier_name in current_block:
+                return stack, [f"Redeclared: {command}"]
 
-            # Insert into symbol table
-            new_symbol_table = {**symbol_table, identifier_name: typ}
-            return new_symbol_table, results + ["success"]
+            # Insert into the current block
+            new_block = {**current_block, identifier_name: typ}
+            new_stack = [new_block] + stack[1:]
+            return new_stack, results + ["success"]
 
         elif cmd_type == "ASSIGN":
             if len(parts) != 3:
-                return symbol_table, [f"InvalidInstruction: {command}"]
+                return stack, [f"InvalidInstruction: {command}"]
             _, identifier_name, value = parts
 
-            # Check if identifier_name is declared
-            if identifier_name not in symbol_table:
-                return symbol_table, [f"Undeclared: {command}"]
+            # Find the identifier in the stack
+            def find_identifier(stack, name):
+                for block in stack:
+                    if name in block:
+                        return block[name]
+                return None
+
+            identifier_type = find_identifier(stack, identifier_name)
+            if identifier_type is None:
+                return stack, [f"Undeclared: {command}"]
 
             # Determine the type of the value
             if value.isdigit():
                 value_type = "number"
             elif value.startswith("'") and value.endswith("'") and value[1:-1].isalnum():
                 value_type = "string"
-            elif value in symbol_table:
-                value_type = symbol_table[value]
+            elif value[0].islower() and value.replace("_", "").isalnum():
+                value_type = find_identifier(stack, value)
+                if value_type is None:
+                    return stack, [f"Undeclared: {command}"]
             else:
-                # If the value is not a valid constant or string, check for invalid formats
-                if not value.isalnum():
-                    return symbol_table, [f"InvalidInstruction: {command}"]
-                # If the value is a valid identifier format but undeclared
-                return symbol_table, [f"Undeclared: {command}"]
+                return stack, [f"InvalidInstruction: {command}"]
 
             # Check for TypeMismatch error
-            if symbol_table[identifier_name] != value_type:
-                return symbol_table, [f"TypeMismatch: {command}"]
+            if identifier_type != value_type:
+                return stack, [f"TypeMismatch: {command}"]
 
-            # Assignment is successful
-            return symbol_table, results + ["success"]
+            return stack, results + ["success"]
 
-        # If command is invalid or not recognized
-        return symbol_table, [f"InvalidInstruction: {command}"]
+        elif cmd_type == "BEGIN":
+            # Push a new block onto the stack
+            return [{}] + stack, results  # No "success" for BEGIN
 
-    # Use reduce to process all commands and stop on the first error
+        elif cmd_type == "END":
+            # Pop the top block from the stack
+            if len(stack) == 1:
+                return stack, [f"UnknownBlock: {len(stack)}"]
+            return stack[1:], results  # No "success" for END
+
+        elif cmd_type == "LOOKUP":
+            if len(parts) != 2:
+                return stack, [f"InvalidInstruction: {command}"]
+            identifier_name = parts[1]
+
+            # Find the identifier in the stack
+            def find_level(stack):
+                for i, block in enumerate(stack):
+                    if identifier_name in block:
+                        return i
+                return None
+
+            level = find_level(stack)
+            return stack, results + [str(level) if level is not None else "0"]
+
+        elif cmd_type == "PRINT":
+            # Collect all symbols in the stack
+            symbols = [
+                f"{name}//{i}"
+                for i, block in enumerate(stack)
+                for name in block
+            ]
+            return stack, results + [" ".join(symbols)]
+
+        elif cmd_type == "RPRINT":
+            # Collect all symbols in the stack in reverse order
+            symbols = [
+                f"{name}//{len(stack) - i - 1}"
+                for i, block in enumerate(reversed(stack))
+                for name in block
+            ]
+            return stack, results + [" ".join(symbols)]
+
+        return stack, [f"InvalidInstruction: {command}"]
+
+    # Use reduce to process all commands
     def reducer(state, command):
-        symbol_table, results = state
-        if results and "success" not in results[-1]:
+        stack, results = state
+        if results and results[-1] not in ["success"]:
             return state  # Stop processing if an error has already occurred
         return process_command(state, command)
 
-    _, results = reduce(reducer, list_of_commands, ({}, []))
-    return results
+    initial_state = ([{}], [])
+    final_stack, final_results = reduce(reducer, list_of_commands, initial_state)
+
+    # Check for unclosed blocks only if no errors occurred
+    if len(final_stack) > 1 and all(r == "success" for r in final_results):
+        return [f"UnclosedBlock: {len(final_stack) - 1}"]
+
+    return final_results
