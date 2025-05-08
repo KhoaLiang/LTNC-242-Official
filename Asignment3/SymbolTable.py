@@ -61,21 +61,63 @@ def simulate(list_of_commands):
                 return stack, [f"Undeclared: {command}"]
 
             # Determine the type of the value
+            # if value.isdigit():
+            #     value_type = "number"
+            # elif value.startswith("'") and value.endswith("'") and value[1:-1].isalnum():
+            #     value_type = "string"
+            # elif value[0].islower() and value.replace("_", "").isalnum():
+            #     value_type = find_identifier(stack, value)
+            #     if value_type is None:
+            #         return stack, [f"Undeclared: {command}"]
+            # else:
+            #     return stack, [f"InvalidInstruction: {command}"]
+
+            # # Check TypeMismatch error
+            # if identifier_type != value_type:
+            #     return stack, [f"TypeMismatch: {command}"]
+            
+            # if value.isdigit():
+            #     number_type = "number"
+            # elif value.startswith("'") and value.endswith("'") and value[1:-1].isalnum():
+            #     string_type = "string"
+            # elif value[0].islower() and value.replace("_", "").isalnum():
+            #     referenced_type = find_identifier(stack, value)
+            #     if referenced_type is None:
+            #         return stack, [f"Undeclared: {command}"]
+            # else:
+            #     return stack, [f"InvalidInstruction: {command}"]
+
+            # # Assign the determined type to a new variable
+            # if value.isdigit():
+            #     determined_type = number_type
+            # elif value.startswith("'") and value.endswith("'") and value[1:-1].isalnum():
+            #     determined_type = string_type
+            # else:
+            #     determined_type = referenced_type
+
+            # # Check TypeMismatch error
+            # if identifier_type != determined_type:
+            #     return stack, [f"TypeMismatch: {command}"]
+
+            # return stack, results + ["success"]
             if value.isdigit():
-                value_type = "number"
+                number_type = "number"
+                if identifier_type != number_type:
+                    return stack, [f"TypeMismatch: {command}"]
             elif value.startswith("'") and value.endswith("'") and value[1:-1].isalnum():
-                value_type = "string"
+                string_type = "string"
+                if identifier_type != string_type:
+                    return stack, [f"TypeMismatch: {command}"]
             elif value[0].islower() and value.replace("_", "").isalnum():
-                value_type = find_identifier(stack, value)
-                if value_type is None:
+                referenced_type = find_identifier(stack, value)
+                if referenced_type is None:
                     return stack, [f"Undeclared: {command}"]
+                if identifier_type != referenced_type:
+                    return stack, [f"TypeMismatch: {command}"]
             else:
                 return stack, [f"InvalidInstruction: {command}"]
 
-            # Check TypeMismatch error
-            if identifier_type != value_type:
-                return stack, [f"TypeMismatch: {command}"]
-
+            # If no errors, return success
             return stack, results + ["success"]
 
         elif cmd_type == "BEGIN":
@@ -106,32 +148,30 @@ def simulate(list_of_commands):
 
             # Append the block level to results
             return stack, results + [str(len(stack) - level - 1)]
-        
-        # new code very close
+
         elif cmd_type == "PRINT":
             # Collect all symbols in the stack in declaration order, considering redeclarations
-            declared_order = []
             declared_order = reduce(lambda acc, block: acc + list(block.keys()), reversed(stack), [])
 
             # Generate the symbols with their levels
-            symbols = list(map(
-                lambda x: f"{x[1]}//{len(stack) - x[0] - 1}",
-                [(i, name) for i, block in enumerate(stack) for name in block]
-            ))
+            symbols = [
+                f"{name}//{len(stack) - i - 1}"
+                for i, block in enumerate(stack)
+                for name in block
+            ]
 
             # Arrange symbols in the declared order
-            symbols_to_print = list(filter(
-                lambda symbol: any(symbol.startswith(f"{name}//") for name in declared_order),
-                symbols
-            ))
+            symbols_to_print = [
+                symbol for name in declared_order
+                for symbol in symbols
+                if symbol.startswith(f"{name}//")
+            ]
 
             # Determine the current level of the PRINT command
             current_level = len(stack) - 1
 
             # Identify redeclared identifiers
-            ReDeclared = []
-            seen = set()
-            ReDeclared = list(filter(lambda name: declared_order.count(name) > 1, declared_order))
+            ReDeclared = [name for name in declared_order if declared_order.count(name) > 1]
 
             # Construct the expected result
             expected_result = [
@@ -154,57 +194,46 @@ def simulate(list_of_commands):
 
             debut_result = list(filter(include_symbol, expected_result))
 
-
-            return stack, results + [
-                # " ".join(declared_order), 
-                # " ".join(symbols),
-                # " ".join(symbols_to_print),
-                # " ".join(expected_result),
-                " ".join(debut_result),
-            ]
+            return stack, results + [" ".join(debut_result)]
 
         elif cmd_type == "RPRINT":
             # Collect all symbols in the stack in declaration order, considering redeclarations
-            declared_order = reduce(lambda acc, block: acc + list(block.keys()), reversed(stack), [])
+            declared_order1 = reduce(lambda acc, block: acc + list(block.keys()), reversed(stack), [])
 
-            # reverse the order of the declarasion
-            rev_declared_order = list(reversed(declared_order))
-            # Collect all symbols in the stack 
-            symbols = [
+            # Reverse the order of the declaration
+            rev_declared_order = list(reversed(declared_order1))
+
+            # Collect all symbols in the stack
+            symbols1 = [
                 f"{name}//{len(stack) - i - 1}"
                 for i, block in enumerate(stack)
                 for name in block
             ]
+
             # Arrange symbols in the declared order
-            symbols_to_print = [
+            symbols_to_print1 = [
                 symbol for name in rev_declared_order
-                for symbol in symbols
+                for symbol in symbols1
                 if symbol.startswith(f"{name}//")
             ]
+
             # Determine the current level of the PRINT command
-            current_level = len(stack) - 1
+            current_level1 = len(stack) - 1
 
             # Identify redeclared identifiers
-            seen = set()
-            ReDeclared = [name for name in rev_declared_order if name in seen or seen.add(name)]
+            ReDeclared1 = [name for name in rev_declared_order if name in set() or set().add(name)]
 
             # Construct the expected result
-            expected_result = []
-            seen_names = set()  # Track already added names
-            expected_result = [
-                f"{name}//{current_level}" if name in ReDeclared else next(
-                    symbol for symbol in symbols_to_print if symbol.startswith(f"{name}//")
+            seen_names = set()
+            expected_result1 = [
+                f"{name}//{current_level1}" if name in ReDeclared1 else next(
+                    symbol for symbol in symbols_to_print1 if symbol.startswith(f"{name}//")
                 )
                 for name in rev_declared_order
                 if name not in seen_names and not seen_names.add(name)
             ]
-            return stack, results + [
-                                    # " ".join(declared_order), 
-                                    # " ".join(rev_declared_order), 
-                                    # " ".join(symbols_to_print), 
-                                    " ".join(expected_result),
-                                    # " ".join(symbols)
-                                    ]
+
+            return stack, results + [" ".join(expected_result1)]
 
         return stack, [f"InvalidInstruction: {command}"]
 
