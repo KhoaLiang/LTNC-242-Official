@@ -1,0 +1,1 @@
+InvalidInstruction: ASSIGN y 'nanni_kure'

@@ -1,0 +1,4 @@
+INSERT xMe_3 number
+INSERT y string
+INSERT w string
+ASSIGN xMe_3 34

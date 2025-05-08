@@ -14,7 +14,8 @@ class TestSymbolTable(unittest.TestCase):
         expected = ["Redeclared: INSERT x string"]
 
         self.assertTrue(TestUtils.check(input, expected, 101))
-
+    
+    # TypeMismatch error for assign
     def test_2(self):
         input = [
             "INSERT x number",
@@ -83,3 +84,221 @@ class TestSymbolTable(unittest.TestCase):
         expected = ["success", "success", "success", "success", "z//1 x//1 y//0"]
 
         self.assertTrue(TestUtils.check(input, expected, 106))
+    def test_7(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+            "ASSIGN x 'abc'",
+        ]
+        expected = ["TypeMismatch: ASSIGN x 'abc'"]
+
+        self.assertTrue(TestUtils.check(input, expected, 107))
+    # Undeclared error for assign
+    def test_8(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+            "ASSIGN z 'abc'",
+        ]
+        expected = ["Undeclared: ASSIGN z 'abc'"]
+
+        self.assertTrue(TestUtils.check(input, expected, 108))
+    def test_9(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+            "ASSIGN w z",
+        ]
+        expected = ["Undeclared: ASSIGN w z"]
+
+        self.assertTrue(TestUtils.check(input, expected, 109))
+    def test_9(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+            "ASSIGN w z",
+        ]
+        expected = ["Undeclared: ASSIGN w z"]
+
+        self.assertTrue(TestUtils.check(input, expected, 109))
+    
+    # white space and valid declaration error for insert
+    def test_10(self):
+        input = [
+            "  INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction:   INSERT x number"]
+
+        self.assertTrue(TestUtils.check(input, expected, 110))
+    def test_11(self):
+        input = [
+            "INSERT x    number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: INSERT x    number"]
+        self.assertTrue(TestUtils.check(input, expected, 111))
+    def test_12(self):
+        input = [
+            "INSERT     x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: INSERT     x number"]
+        self.assertTrue(TestUtils.check(input, expected, 112))
+    def test_13(self):
+        input = [
+            "INSERT x number  ",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: INSERT x number  "]
+        self.assertTrue(TestUtils.check(input, expected, 113))
+    def test_14(self):
+        input = [
+            "INSERT x",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: INSERT x"]
+        self.assertTrue(TestUtils.check(input, expected, 114))
+    def test_15(self):
+        input = [
+            "INSERT string",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: INSERT string"]
+        self.assertTrue(TestUtils.check(input, expected, 115))
+    
+    # White space and valid declaration error for assign
+    def test_16(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "  ASSIGN x 15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction:   ASSIGN x 15"]
+        self.assertTrue(TestUtils.check(input, expected, 116))
+
+    def test_17(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN   x 15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: ASSIGN   x 15"]
+        self.assertTrue(TestUtils.check(input, expected, 117))
+
+    def test_18(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x    15",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: ASSIGN x    15"]
+        self.assertTrue(TestUtils.check(input, expected, 118))
+
+    def test_19(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x 15  ",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: ASSIGN x 15  "]
+        self.assertTrue(TestUtils.check(input, expected, 119))
+
+    def test_20(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN x",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: ASSIGN x"]
+        self.assertTrue(TestUtils.check(input, expected, 120))
+
+    def test_21(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: ASSIGN"]
+        self.assertTrue(TestUtils.check(input, expected, 121))
+    def test_22(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN string",
+            "ASSIGN y 'nannikure'",
+        ]
+        expected = ["InvalidInstruction: ASSIGN string"]
+        self.assertTrue(TestUtils.check(input, expected, 122))
+    def test_23(self):
+        input = [
+            "INSERT xMe_3 number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN xMe_3 34",
+            "ASSIGN y 'nanni_kure'",
+        ]
+        expected = ["InvalidInstruction: ASSIGN y 'nanni_kure'"]
+        self.assertTrue(TestUtils.check(input, expected, 123))
+    def test_24(self):
+        input = [
+            "INSERT xMe_3 number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN xMe_3 34.4",
+            "ASSIGN y 'nanni'",
+        ]
+        expected = ["InvalidInstruction: ASSIGN xMe_3 34.4"]
+        self.assertTrue(TestUtils.check(input, expected, 124))
+    def test_25(self):
+        input = [
+            "INSERT xMe_3 number",
+            "INSERT y string",
+            "INSERT w string",
+            "ASSIGN xMe_3 34",
+        ]
+        expected = ["success", "success", "success", "success"]
+        self.assertTrue(TestUtils.check(input, expected, 125))
+    
+    
