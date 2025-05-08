@@ -392,6 +392,19 @@ class TestSymbolTable(unittest.TestCase):
         expected = ["success", "success", "success", "success", "success", "z//0 x//1 y//1"]
 
         self.assertTrue(TestUtils.check(input, expected, 133))
+    # test reprint
+    def test_34(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT y number",
+            "INSERT z number",
+            "RPRINT",
+            "END",
+        ]
+        expected = ["success", "success", "success", "success", "z//1 y//1 x//0"]
+
 
 
     
