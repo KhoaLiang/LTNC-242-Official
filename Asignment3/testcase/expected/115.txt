@@ -1,1 +1,1 @@
-InvalidInstruction: INSERT string
+InvalidInstruction: INSERT x

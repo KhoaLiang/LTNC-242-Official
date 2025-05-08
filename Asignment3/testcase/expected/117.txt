@@ -1,1 +1,1 @@
-InvalidInstruction: ASSIGN   x 15
+InvalidInstruction:   ASSIGN x 15

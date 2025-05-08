@@ -1,0 +1,4 @@
+INSERT xMe_3 number
+INSERT y string
+ASSIGN y 'hello'
+ASSIGN xMe_3 y

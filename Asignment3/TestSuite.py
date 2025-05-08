@@ -28,20 +28,6 @@ class TestSymbolTable(unittest.TestCase):
 
         self.assertTrue(TestUtils.check(input, expected, 102))
 
-    def test_3(self):
-        input = [
-            "INSERT x number",
-            "INSERT y string",
-            "BEGIN",
-            "INSERT x number",
-            "BEGIN",
-            "INSERT y string",
-            "END",
-            "END",
-        ]
-        expected = ["success", "success", "success", "success"]
-
-        self.assertTrue(TestUtils.check(input, expected, 103))
 
     def test_4(self):
         input = [
@@ -119,21 +105,21 @@ class TestSymbolTable(unittest.TestCase):
         expected = ["Undeclared: ASSIGN w z"]
 
         self.assertTrue(TestUtils.check(input, expected, 109))
-    def test_9(self):
+    def test_10(self):
         input = [
             "INSERT x number",
             "INSERT y string",
             "INSERT w string",
             "ASSIGN x 15",
             "ASSIGN y 'nannikure'",
-            "ASSIGN w z",
+            "ASSIGN t x",
         ]
-        expected = ["Undeclared: ASSIGN w z"]
+        expected = ["Undeclared: ASSIGN t x"]
 
-        self.assertTrue(TestUtils.check(input, expected, 109))
+        self.assertTrue(TestUtils.check(input, expected, 110))
     
     # white space and valid declaration error for insert
-    def test_10(self):
+    def test_11(self):
         input = [
             "  INSERT x number",
             "INSERT y string",
@@ -143,8 +129,8 @@ class TestSymbolTable(unittest.TestCase):
         ]
         expected = ["InvalidInstruction:   INSERT x number"]
 
-        self.assertTrue(TestUtils.check(input, expected, 110))
-    def test_11(self):
+        self.assertTrue(TestUtils.check(input, expected, 111))
+    def test_12(self):
         input = [
             "INSERT x    number",
             "INSERT y string",
@@ -153,8 +139,8 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: INSERT x    number"]
-        self.assertTrue(TestUtils.check(input, expected, 111))
-    def test_12(self):
+        self.assertTrue(TestUtils.check(input, expected, 112))
+    def test_13(self):
         input = [
             "INSERT     x number",
             "INSERT y string",
@@ -163,8 +149,8 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: INSERT     x number"]
-        self.assertTrue(TestUtils.check(input, expected, 112))
-    def test_13(self):
+        self.assertTrue(TestUtils.check(input, expected, 113))
+    def test_14(self):
         input = [
             "INSERT x number  ",
             "INSERT y string",
@@ -173,8 +159,8 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: INSERT x number  "]
-        self.assertTrue(TestUtils.check(input, expected, 113))
-    def test_14(self):
+        self.assertTrue(TestUtils.check(input, expected, 114))
+    def test_15(self):
         input = [
             "INSERT x",
             "INSERT y string",
@@ -183,8 +169,8 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: INSERT x"]
-        self.assertTrue(TestUtils.check(input, expected, 114))
-    def test_15(self):
+        self.assertTrue(TestUtils.check(input, expected, 115))
+    def test_16(self):
         input = [
             "INSERT string",
             "INSERT y string",
@@ -193,10 +179,10 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: INSERT string"]
-        self.assertTrue(TestUtils.check(input, expected, 115))
+        self.assertTrue(TestUtils.check(input, expected, 116))
     
     # White space and valid declaration error for assign
-    def test_16(self):
+    def test_17(self):
         input = [
             "INSERT x number",
             "INSERT y string",
@@ -205,9 +191,9 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction:   ASSIGN x 15"]
-        self.assertTrue(TestUtils.check(input, expected, 116))
+        self.assertTrue(TestUtils.check(input, expected, 117))
 
-    def test_17(self):
+    def test_18(self):
         input = [
             "INSERT x number",
             "INSERT y string",
@@ -216,9 +202,9 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: ASSIGN   x 15"]
-        self.assertTrue(TestUtils.check(input, expected, 117))
+        self.assertTrue(TestUtils.check(input, expected, 118))
 
-    def test_18(self):
+    def test_19(self):
         input = [
             "INSERT x number",
             "INSERT y string",
@@ -227,9 +213,9 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: ASSIGN x    15"]
-        self.assertTrue(TestUtils.check(input, expected, 118))
+        self.assertTrue(TestUtils.check(input, expected, 119))
 
-    def test_19(self):
+    def test_20(self):
         input = [
             "INSERT x number",
             "INSERT y string",
@@ -238,9 +224,9 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: ASSIGN x 15  "]
-        self.assertTrue(TestUtils.check(input, expected, 119))
+        self.assertTrue(TestUtils.check(input, expected, 120))
 
-    def test_20(self):
+    def test_21(self):
         input = [
             "INSERT x number",
             "INSERT y string",
@@ -249,9 +235,9 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: ASSIGN x"]
-        self.assertTrue(TestUtils.check(input, expected, 120))
+        self.assertTrue(TestUtils.check(input, expected, 121))
 
-    def test_21(self):
+    def test_22(self):
         input = [
             "INSERT x number",
             "INSERT y string",
@@ -260,8 +246,8 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: ASSIGN"]
-        self.assertTrue(TestUtils.check(input, expected, 121))
-    def test_22(self):
+        self.assertTrue(TestUtils.check(input, expected, 122))
+    def test_23(self):
         input = [
             "INSERT x number",
             "INSERT y string",
@@ -270,8 +256,8 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nannikure'",
         ]
         expected = ["InvalidInstruction: ASSIGN string"]
-        self.assertTrue(TestUtils.check(input, expected, 122))
-    def test_23(self):
+        self.assertTrue(TestUtils.check(input, expected, 123))
+    def test_24(self):
         input = [
             "INSERT xMe_3 number",
             "INSERT y string",
@@ -280,8 +266,8 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nanni_kure'",
         ]
         expected = ["InvalidInstruction: ASSIGN y 'nanni_kure'"]
-        self.assertTrue(TestUtils.check(input, expected, 123))
-    def test_24(self):
+        self.assertTrue(TestUtils.check(input, expected, 124))
+    def test_25(self):
         input = [
             "INSERT xMe_3 number",
             "INSERT y string",
@@ -290,8 +276,8 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN y 'nanni'",
         ]
         expected = ["InvalidInstruction: ASSIGN xMe_3 34.4"]
-        self.assertTrue(TestUtils.check(input, expected, 124))
-    def test_25(self):
+        self.assertTrue(TestUtils.check(input, expected, 125))
+    def test_26(self):
         input = [
             "INSERT xMe_3 number",
             "INSERT y string",
@@ -299,6 +285,54 @@ class TestSymbolTable(unittest.TestCase):
             "ASSIGN xMe_3 34",
         ]
         expected = ["success", "success", "success", "success"]
-        self.assertTrue(TestUtils.check(input, expected, 125))
+        self.assertTrue(TestUtils.check(input, expected, 126))
+    def test_27(self):
+        input = [
+            "INSERT xMe_3 number",
+            "INSERT y number",
+            "ASSIGN y 36",
+            "ASSIGN xMe_3 y",
+        ]
+        expected = ["success", "success", "success", "success"]
+        self.assertTrue(TestUtils.check(input, expected, 127))
+    # TypeMismatch error
+    def test_28(self):
+        input = [
+            "INSERT xMe_3 number",
+            "INSERT y string",
+            "ASSIGN y 'hello'",
+            "ASSIGN xMe_3 y",
+        ]
+        expected = ["TypeMismatch: ASSIGN xMe_3 y"]
+        self.assertTrue(TestUtils.check(input, expected, 128))
     
+    # Block test
+    def test_3(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT x number",
+            "BEGIN",
+            "INSERT y string",
+            "END",
+            "END",
+        ]
+        expected = ["success", "success", "success", "success"]
+
+        self.assertTrue(TestUtils.check(input, expected, 103))
+    def test_29(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT x number",
+            "BEGIN",
+            "INSERT y string",
+            "END",
+        ]
+        expected = ["UnclosedBlock: 1"]
+
+        self.assertTrue(TestUtils.check(input, expected, 129))
+
     

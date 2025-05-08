@@ -1,5 +1,5 @@
-INSERT x number
+INSERT string
 INSERT y string
 INSERT w string
-  ASSIGN x 15
+ASSIGN x 15
 ASSIGN y 'nannikure'

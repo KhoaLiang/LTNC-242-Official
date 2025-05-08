@@ -1,4 +1,4 @@
-INSERT string
+INSERT x
 INSERT y string
 INSERT w string
 ASSIGN x 15

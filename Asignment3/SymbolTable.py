@@ -222,6 +222,10 @@ def simulate(list_of_commands):
             elif value in symbol_table:
                 value_type = symbol_table[value]
             else:
+                # If the value is not a valid constant or string, check for invalid formats
+                if not value.isalnum():
+                    return symbol_table, [f"InvalidInstruction: {command}"]
+                # If the value is a valid identifier format but undeclared
                 return symbol_table, [f"Undeclared: {command}"]
 
             # Check for TypeMismatch error

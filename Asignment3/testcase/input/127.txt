@@ -1,0 +1,4 @@
+INSERT xMe_3 number
+INSERT y number
+ASSIGN y 36
+ASSIGN xMe_3 y
