@@ -1,0 +1,13 @@
+INSERT x number
+INSERT y string
+BEGIN
+INSERT xx number
+INSERT zz number
+INSERT ww number
+BEGIN
+INSERT uuu number
+INSERT ttt number
+INSERT vvv number
+PRINT
+END
+END

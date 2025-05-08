@@ -356,7 +356,42 @@ class TestSymbolTable(unittest.TestCase):
             "END",
             "END",
         ]
-        expected = ["UnknownBlock: 1"]
+        expected = ["UnknownBlock"]
         self.assertTrue(TestUtils.check(input, expected, 131))
+    # test print
+    def test_32(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "BEGIN",
+            "INSERT xx number",
+            "INSERT zz number",
+            "INSERT ww number",
+            "BEGIN",
+            "INSERT uuu number",
+            "INSERT ttt number",
+            "INSERT vvv number",
+            "PRINT",
+            "END",
+            "END",
+        ]
+        expected = ["success", "success", "success", "success", "success", "success", "success", "success", "x//0 y//0 xx//1 zz//1 ww//1 uuu//2 ttt//2 vvv//2"]
+
+        self.assertTrue(TestUtils.check(input, expected, 132))
+    def test_33(self):
+        input = [
+            "INSERT x number",
+            "INSERT y string",
+            "INSERT z number",
+            "BEGIN",
+            "INSERT x number",
+            "INSERT y number",
+            "PRINT",
+            "END",
+        ]
+        expected = ["success", "success", "success", "success", "success", "z//0 x//1 y//1"]
+
+        self.assertTrue(TestUtils.check(input, expected, 133))
+
 
     
