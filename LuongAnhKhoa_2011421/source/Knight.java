@@ -12,7 +12,7 @@ public class Knight extends Fighter {
             }
             return getBaseHp() * 2;
         }
-        if(getWp() == 1.0){
+        if(getWp() == 1.0){1
             if (getBaseHp() > 999) {
                 return 999;
             }

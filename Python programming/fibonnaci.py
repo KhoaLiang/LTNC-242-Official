@@ -16,5 +16,5 @@ def fibonacci(n):
 
 # Example usage
 if __name__ == "__main__":
-    n = 10  # Change this value to compute a different Fibonacci number
+    n = 8  # Change this value to compute a different Fibonacci number
     print(f"The {n}th Fibonacci number is: {fibonacci(n)}")
